@@ -85,35 +85,28 @@ namespace Phonebook
 
         public List<Abonent> SortList(List<Abonent> list, int first, int last) 
         {
-            List<Abonent> sortedList = list;
-            var m = sortedList[(last - first) / 2];
+            var m = list[(last + first) / 2];
             int i = first;
             int j = last;
             while (i <= j)
             {
-                while (CompareAbonents(sortedList[i],m)>0 && i <= last) i++;
-                while (CompareAbonents(sortedList[j], m)<0 && j >= first)j--;
+                while (CompareAbonents(list[i], m) < 0) i++;
+                while (CompareAbonents(list[j], m) > 0) j--;
                 if (i <= j)
                 {
-                    var temp = sortedList[i];
-                    var temp1 = sortedList[j];
-                    list.RemoveAt(i);
-                    list.Insert(i, temp1);
-                    list.RemoveAt(j);
-                    list.Insert(j,temp);
+                    var temp = list[i];
+                    list[i] = list[j];
+                    list[j] = temp;
                     i++; j--;
                 }
             }
-            if (first < j) SortList(sortedList, first, j);
-            if (i < last) SortList(sortedList, i, last);
-            return sortedList;
+            if (first < j) SortList(list, first, j);
+            if (i < last) SortList(list, i, last);
+            return list;
         }
         public int CompareAbonents(Abonent first, Abonent second)
         {
-            string f = first.Name;
-            string s = second.Name;
-            var res = String.Compare(f, s, true);
-            return res;
+            return string.Compare(first.Name, second.Name, true);
         }
 
 
@@ -122,10 +115,10 @@ namespace Phonebook
             switch (command[0].ToLower())
             {
                 case "help":
-                    Console.WriteLine(@"Чтобы добавить нового адресата введите команду ""add Имя Номер_телефона""");
-                    Console.WriteLine(@"Просмотр отсортированного списка добавленных абонентов командой ""list""");
-                    Console.WriteLine(@"Для выхода из приложения ввыедите команду ""exit""");
-                    Console.WriteLine(@"Для очистки консоли введите команду ""clear""");
+                    Console.WriteLine(@"For adding new adress type ""add Name Phone_Number""");
+                    Console.WriteLine(@"Show adresses type ""list""");
+                    Console.WriteLine(@"For exit type ""exit""");
+                    Console.WriteLine(@"For console clear type ""clear""");
                     command = Separate(Console.ReadLine().Trim());
                     Executor(command);
                     return;
@@ -133,7 +126,7 @@ namespace Phonebook
                 case "add":
                     if (String.IsNullOrEmpty(command[2]))
                     {
-                        Console.WriteLine(@"Ошибка. Для добавления нового адресата введите команду в формате ""add Имя Номер_телефона""");
+                        Console.WriteLine(@"Error. For adding new adress type ""add Name Phone_Number""");
                     }
                     AddAbonent(command[1], command[2]);
                     SavePhoneBook();
@@ -143,8 +136,8 @@ namespace Phonebook
                     return;
 
                 case "list":
-                    //ShowAbonents(SortList(abonentList,0,abonentList.Count-1));
-                    ShowAbonents(abonentList.OrderBy(o=>o.Name).ToList());
+                    ShowAbonents(SortList(abonentList,0,abonentList.Count-1));
+                    //ShowAbonents(abonentList.OrderBy(o=>o.Name).ToList());
                     command = Separate(Console.ReadLine().Trim());
                     Executor(command);
                     return;
@@ -154,13 +147,13 @@ namespace Phonebook
 
                 case "clear":
                     Console.Clear();
-                    Console.WriteLine(@"Введите команду. Для вызова справки введите команду ""help""");
+                    Console.WriteLine(@"Type command. For help type ""help""");
                     command = Separate(Console.ReadLine().Trim());
                     Executor(command);
                     return;
 
                 default:
-                    Console.WriteLine(@"Неизвестная комманда");
+                    Console.WriteLine(@"Unknown command");
                     command = Separate(Console.ReadLine().Trim());
                     Executor(command);
                     return;

@@ -13,7 +13,7 @@ namespace Phonebook
         {
             Commands commands = new Commands();
             commands.Initialize();
-            Console.WriteLine(@"Введите команду. Для вызова справки введите команду ""help""");
+            Console.WriteLine(@"Type command. For help type ""help""");
             var commandString = Console.ReadLine();
             commands.Executor(commands.Separate(commandString.Trim()));
         }
